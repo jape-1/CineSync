@@ -6,6 +6,7 @@ hardcodean secretos aquí: los valores sensibles llegan por variable de entorno.
 
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,6 +16,21 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @field_validator("database_url", mode="after")
+    @classmethod
+    def _use_asyncpg(cls, v: str) -> str:
+        """Normaliza la URL a asyncpg.
+
+        Railway/Heroku entregan `postgres://` o `postgresql://`; SQLAlchemy async
+        necesita `postgresql+asyncpg://`. Así se puede pegar la URL de Railway tal
+        cual sin reescribirla a mano.
+        """
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
 
     # --- App ---
     app_name: str = "CineSync API"
