@@ -1,0 +1,49 @@
+# ─── Secretos (NUNCA subir) ───
+.env
+**/.env
+*.env
+!**/.env.example
+!.env.example
+
+# ─── Python / backend ───
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.agents/
+*.sqlite3
+
+# ─── Flutter / Dart ───
+Cine-main/build/
+Cine-main/.dart_tool/
+Cine-main/.flutter-plugins
+Cine-main/.flutter-plugins-dependencies
+Cine-main/.pub-cache/
+Cine-main/.pub/
+**/.gradle/
+**/generated_plugin_registrant.*
+# Logs de crash del engine (grandes, no aportan)
+Cine-main/hs_err_pid*.log
+Cine-main/replay_pid*.log
+
+# ─── Android build ───
+Cine-main/android/.gradle/
+Cine-main/android/app/debug/
+Cine-main/android/app/profile/
+Cine-main/android/app/release/
+*.keystore
+*.jks
+key.properties
+
+# ─── Docker ───
+# (los volúmenes viven en el daemon, no en el repo)
+
+# ─── SO / IDE ───
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
