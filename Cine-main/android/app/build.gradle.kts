@@ -30,6 +30,12 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+            // Desactivamos R8/minificación y shrink de recursos: el minificador
+            // rompe las clases de ML Kit (mobile_scanner) en release y provoca
+            // un NullPointerException al abrir la cámara. Sin minificar, el
+            // escáner de QR funciona igual que en debug.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
