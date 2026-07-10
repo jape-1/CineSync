@@ -91,15 +91,9 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   MobileScanner(
                     controller: _controller,
                     onDetect: _onDetect,
-                    errorBuilder: (context, error) => Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Text(
-                          'No se pudo abrir la cámara:\n${error.errorCode}',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white70),
-                        ),
-                      ),
+                    errorBuilder: (context, error) => _CameraError(
+                      error: error,
+                      onRetry: () => _controller.start(),
                     ),
                   ),
                   // Marco de escaneo
@@ -135,6 +129,61 @@ class _ScannerScreenState extends State<ScannerScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Muestra el detalle real del error de cámara (para diagnosticar sin USB) y
+/// un botón para reintentar iniciar la cámara.
+class _CameraError extends StatelessWidget {
+  final MobileScannerException error;
+  final Future<void> Function() onRetry;
+  const _CameraError({required this.error, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    final d = error.errorDetails;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.videocam_off, color: Colors.white54, size: 48),
+            const SizedBox(height: 16),
+            const Text('No se pudo abrir la cámara',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            Text('code: ${error.errorCode}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            if (d?.code != null)
+              Text('platform: ${d!.code}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white70, fontSize: 12)),
+            if (d?.message != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(d!.message!,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.white54, fontSize: 11)),
+              ),
+            const SizedBox(height: 20),
+            OutlinedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh, color: Colors.white),
+              label: const Text('Reintentar',
+                  style: TextStyle(color: Colors.white)),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: Colors.white54),
               ),
             ),
           ],
